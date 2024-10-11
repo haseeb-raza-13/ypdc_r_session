@@ -1,0 +1,65 @@
+---
+title: "Automatic Plotting under YPDC Peer Mentorship"
+author: "Haseeb Raza"
+date: "2024-07-09"
+output:
+  
+  html_document: 
+    highlight: zenburn
+    theme: journal
+  pdf_document: 
+    highlight: pygments
+---
+# Activating respositories
+
+
+```{r c1}
+library(ggplot2)
+ggplot(midwest) +
+  aes(x = percadultpoverty) +
+  geom_histogram(bins = 30L, fill = "#112446") +
+  theme_minimal()
+
+```
+
+
+
+
+
+
+```{r}
+library(plotly)
+
+
+p1 <- ggplot(midwest) +
+  aes(x = percchildbelowpovert, y = percadultpoverty) +
+  geom_point(shape = "circle filled", colour = "#106DC6") +
+  labs(
+    x = "PCDP",
+    y = "PDP",
+    title = "YPDC's",
+    subtitle = "Peer Mentorship"
+  ) +
+  ggthemes::theme_foundation()
+
+
+ggplotly(p1)
+
+
+```
+
+
+
+
+
+```{r}
+library(ggplot2)
+ggplot(midwest) +
+  aes(x = state, y = category, fill = percchildbelowpovert) +
+  geom_tile() +
+  scale_fill_viridis_c(option = "viridis", direction = -1) +
+  theme_classic() +
+  facet_wrap(vars(state))
+
+```
+

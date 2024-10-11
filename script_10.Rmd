@@ -1,0 +1,78 @@
+---
+title: "Statistics using R"
+author: "Haseeb Raza"
+date: "2024-07-11"
+output:
+  pdf_document: default
+  html_document: 
+    highlight: zenburn
+    theme: journal
+---
+# T-test in statistics
+## One sample t-test  & two sample t-test
+### To check the normal distribution ;
+to check the normality distribution we can perform Shapiro Wilk test and Kolmogrov Simirnov Test, 
+or we can draw a histogram and qqnorm plot,
+
+```{r}
+df <- iris
+shapiro.test(df$Sepal.Width)
+```
+so based upon the above result we can say that Sepal.Width in iris is normal.
+
+```{r}
+qqnorm(df$Sepal.Width)
+```
+
+
+```{r}
+hist(df$Sepal.Width)
+```
+
+
+### To check the composition of data; 
+we can perform Leven's Test to check the composition of variable
+```{r}
+library(car)
+leveneTest(df$Sepal.Width ~ df$Species , data=df)
+```
+
+## One sample T-test on Sepal Width Data
+```{r}
+t.test(df$Sepal.Width , mu=5)
+```
+
+## Two sample T-test
+There two types of two sample t-test 
+- Unpaired T-test
+- Paired T-test
+
+### Unpaired T-test
+```{r}
+library(tidyverse)
+t.test(df$Sepal.Width ~ df$Species=="setosa" |df$Species=="versicolor")
+```
+
+The above result indicates that these two variable has no significant difference.
+
+
+```{r}
+library(tidyverse)
+t.test(df$Sepal.Width ~ df$Species=="versicolor" |df$Species=="virginica")
+```
+
+According to above the result the variables are significantly different from each other.
+
+### Paired T-test 
+For this test we have randomly created a data set having two thousand observations, with a standard deviation of ten.
+
+```{r}
+pre_treatment <- c(rnorm(2000, mean = 140, sd=10 ))
+tibble(pre_treatment)
+post_treatment <- c(rnorm(2000, mean = 170, sd=10))
+tibble(post_treatment)
+t.test(pre_treatment, post_treatment, paired = TRUE)
+
+```
+
+The result indicates that the averages of pre_treatment and post_treatment data differ significantly from each other.

@@ -1,0 +1,6 @@
+"0","library(tidyverse)"
+"0","group_letters <- as.data.frame.list(group_letters$feed)"
+"0",""
+"0","mean_data$group_letters <- group_letters$Letters"
+"0",""
+"0","tibble(mean_data)"

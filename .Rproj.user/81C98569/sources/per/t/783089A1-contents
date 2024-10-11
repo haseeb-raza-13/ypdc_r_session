@@ -1,0 +1,124 @@
+#----
+setRepositories()
+install.packages("readxl", dependencies = TRUE)
+library(readxl)
+install.packages("tidyverse", dependencies = TRUE)
+library(tidyverse)
+library(ggplot2)
+install.packages("ggthemes", dependencies = TRUE)
+library(ggthemes)
+install.packages("multcomp", dependencies = TRUE)
+library(multcomp)
+library(multcompView)
+library(stats)
+install.packages("RcolorBrewer", dependencies = TRUE)
+library(RColorBrewer)
+#######
+data("chickwts")
+df <- chickwts
+unique(df$feed)
+mean_data <- group_by(df, feed) %>% summarise(weight_mean = mean(weight),
+                                              sd = sd(weight)) %>% 
+  arrange(desc(weight_mean))
+#sd()/sqrt(n) = std error
+
+
+
+tibble(mean_data)
+
+anova <- aov(weight ~ feed, data=df)
+
+summary(anova)
+ 
+tukey <- TukeyHSD(anova)
+tukey
+plot(TukeyHSD(anova))
+
+#barplot----
+group_letters <- multcompLetters4(anova, tukey)
+group_letters
+
+
+group_letters <- as.data.frame.list(group_letters$feed)
+
+mean_data$group_letters <- group_letters$Letters
+
+tibble(mean_data)
+
+#####
+p <- ggplot(mean_data, mapping = aes(x=feed, y=weight_mean))+
+  geom_bar(stat = "identity")
+
+ggplot(mean_data, mapping = aes(x=feed, y=weight_mean))+
+  geom_bar(stat = "identity", aes(fill = feed), show.legend = FALSE)
+
+ggplot(mean_data, mapping = aes(x=feed, y=weight_mean))+
+  geom_bar(stat = "identity", aes(fill = feed), show.legend = FALSE, width = 0.6)
+
+ggplot(mean_data, mapping = aes(x=feed, y=weight_mean))+
+  geom_bar(stat = "identity", aes(fill = feed), show.legend = FALSE, width = 0.6)+
+  geom_errorbar(aes(ymin = weight_mean-sd, ymax = weight_mean+sd), width= 0.1)
+
+ggplot(mean_data, mapping = aes(x=feed, y=weight_mean))+
+  geom_bar(stat = "identity", aes(fill = feed), show.legend = FALSE, width = 0.6)+
+  geom_errorbar(aes(ymin = weight_mean-sd, ymax = weight_mean+sd), width= 0.1)+
+  geom_text(aes(label = group_letters, y= weight_mean+sd))
+
+
+ggplot(mean_data, mapping = aes(x=feed, y=weight_mean))+
+  geom_bar(stat = "identity", aes(fill = feed), show.legend = FALSE, width = 0.6)+
+  geom_errorbar(aes(ymin = weight_mean-sd, ymax = weight_mean+sd), width= 0.1)+
+  geom_text(aes(label = group_letters, y= weight_mean+sd), vjust= -0.4)
+
+
+ggplot(mean_data, mapping = aes(x=feed, y=weight_mean))+
+  geom_bar(stat = "identity", aes(fill = feed), show.legend = FALSE, width = 0.6)+
+  geom_errorbar(aes(ymin = weight_mean-sd, ymax = weight_mean+sd), width= 0.1)+
+  geom_text(aes(label = group_letters, y= weight_mean+sd), vjust= -0.4)+
+  scale_fill_brewer(palette = "Spectral", direction = 1)
+
+display.brewer.all()
+
+
+
+ggplot(mean_data, mapping = aes(x=feed, y=weight_mean))+
+  geom_bar(stat = "identity", aes(fill = feed), show.legend = FALSE, width = 0.6)+
+  geom_errorbar(aes(ymin = weight_mean-sd, ymax = weight_mean+sd), width= 0.1)+
+  geom_text(aes(label = group_letters, y= weight_mean+sd), vjust= -0.4)+
+  scale_fill_brewer(palette = "RdYlGn", direction = 1)+
+  labs(title = "summer session bar-plot", x="Feed", y="Chicken Weight", fill= "Feed Type")
+
+
+p <- ggplot(mean_data, mapping = aes(x=feed, y=weight_mean))+
+  geom_bar(stat = "identity", aes(fill = feed), show.legend = FALSE, width = 0.6)+
+  geom_errorbar(aes(ymin = weight_mean-sd, ymax = weight_mean+sd), width= 0.1)+
+  geom_text(aes(label = group_letters, y= weight_mean+sd), vjust= -0.4)+
+  scale_fill_brewer(palette = "RdYlGn", direction = 1)+
+  labs(title = "summer session bar-plot", x="Feed", y="Chicken Weight", fill= "Feed Type")+
+  ylim(0,410)+ ggthemes::theme_hc() ;p
+
+
+tiff("barplot.tiff", units = "in", width = 10, height = 6, res = 300, compression = "lzw")
+p
+dev.off()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

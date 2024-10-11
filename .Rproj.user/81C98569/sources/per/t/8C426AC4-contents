@@ -1,0 +1,13 @@
+setRepositories()
+library(readxl)
+library(tidyverse)
+library(ggplot2)
+install.packages("ggthemes", dependencies = TRUE)
+library(ggthemes)
+install.packages("multcomp", dependencies = TRUE)
+library(multcomp)
+library(multcompView)
+library(stats)
+install.packages("RcolorBrewer", dependencies = TRUE)
+library(RColorBrewer)
+# importing data set----

@@ -1,0 +1,53 @@
+---
+title: "A-PLT Day 2"
+author: "Haseeb Raza"
+date: "2024-07-10"
+output:
+  pdf_document: default
+  html_document: default
+---
+# Data distribution through graphs  
+## Histogram can be used to check the normality of data
+```{r nc}
+library(ggplot2)
+ggplot(midwest) +
+  aes(x = percchildbelowpovert) +
+  geom_histogram(bins = 30L, fill = "#DE871C") +
+  theme_minimal()
+```
+
+## Scatterplot is used to visualize the distribution of two variables
+
+```{r}
+library(ggplot2)
+ggplot(midwest) +
+  aes(
+    x = percchildbelowpovert,
+    y = percadultpoverty,
+    colour = state,
+    size = category
+  ) +
+  geom_point() +
+  scale_color_viridis_d(option = "plasma", direction = 1) +
+  theme_classic()
+```
+
+# Graphs can be merged for a better  understanding
+
+```{r}
+
+library(ggplot2)
+ggplot(midwest) +
+ aes(x = percchildbelowpovert, y = percadultpoverty) +
+ geom_point(colour = "#112446") +
+ geom_smooth(aes(fill = state), se = TRUE, colour = "#112446") +
+ scale_fill_viridis_d(option = "viridis", 
+ direction = 1) +
+ labs(x = "PCP", y = "PAP", title = "Linear Regression", subtitle = "under YPDC's Peer Mentorship") +
+ theme_classic() +
+ theme(legend.text = element_text(face = "bold", size = 12L), legend.title = element_text(face = "bold", 
+ size = 14L))
+
+```
+
+

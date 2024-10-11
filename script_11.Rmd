@@ -1,0 +1,134 @@
+---
+title: "ANOVA and Post-hoc Tests in Statistics using R"
+author: "Haseeb Raza"
+date: "2024-07-12"
+output:
+  pdf_document:
+    highlight: zenburn
+  html_document:
+    df_print: paged
+---
+# Analysis of Variance in Statistics (ANOVA)
+Analysis of Variance (ANOVA) is a statistical method used to compare means among three or more groups to determine if there are any statistically significant differences between the group means. ANOVA helps to ascertain whether the observed differences in sample means are due to actual differences between the groups or just random variations.
+
+## Importing penguins data set for analysis
+
+```{r}
+library(palmerpenguins)
+df <- palmerpenguins::penguins
+head(df)
+tail(df)
+```
+
+```{r}
+unique(df$species)
+unique(df$island)
+unique(df$sex)
+unique(df$year)
+```
+
+```{r}
+summary(df)
+```
+
+- **To proceed with ANOVA we need to meet assumptions** 
+1. Data should have normal distribution. 
+2. Data should be homogeneous in composition
+
+## To check the normality of data
+
+```{r}
+library(tidyverse)
+shapiro.test(df$flipper_length_mm)
+qqnorm(df$flipper_length_mm)
+df %>% 
+  select(. , flipper_length_mm) %>% 
+  group_by(df$species) %>% 
+  summarise(avg = mean(flipper_length_mm))
+```
+
+- According to the above result obtained from flipper_length data we can say that data is not following normal distribution because there are NA values in flipper_length data.
+
+
+
+```{r}
+library(tidyverse)
+df %>% 
+  select(. , flipper_length_mm) %>% 
+  drop_na() %>% 
+  summarise(shapiro_value = shapiro.test(flipper_length_mm)$p.value)
+```
+
+```{r}
+library(tidyverse)
+df %>% 
+  select(. , flipper_length_mm) %>% 
+  group_by(df$species) %>% 
+  drop_na() %>% 
+  summarise(shapiro_pvalue = shapiro.test(flipper_length_mm)$p.value)
+```
+
+## Composition of Data 
+
+### Using Leven's Test for composition assessment 
+```{r}
+library(tidyverse)
+library(car)
+leveneTest(df$flipper_length_mm ~ df$species, data = df)
+```
+
+- based on the result of "Leven's Test" we can say that flipper_length data is homogeneous.
+
+### Using Dot-plot to check the composition of data
+
+```{r}
+library(lattice)
+dotplot(df$flipper_length_mm ~ df$species , data = df)
+```
+
+### Boxplots can also be used to check the composition of data 
+
+```{r}
+library(ggplot2)
+ggplot(df, mapping = aes(species, flipper_length_mm, fill = species))+geom_boxplot()+theme_classic()
+```
+
+## Exploratory Data Analysis (EDA)
+
+```{r}
+library(tidyverse)
+df %>% 
+  select(., flipper_length_mm) %>% 
+  group_by(df$species) %>% 
+  drop_na() %>% 
+  summarise( avg = mean(flipper_length_mm), sd = sd(flipper_length_mm))
+```
+
+
+## Applying One-way ANOVA on flipper_length_mm on the basis of species
+### Method #1
+```{r}
+library(stats)
+oneway.test(df$flipper_length_mm ~ df$species,  data = df, var.equal = TRUE)
+```
+
+- On the basis of above result we can say that flipper lengths of species show significant difference from each other.
+
+### Method #2
+
+```{r}
+ res_aov <- aov(df$flipper_length_mm ~ df$species, data= df)
+summary(res_aov)
+```
+
+# Post-hoc Tests in Statistics (Tukey-HSD, Bonferoni, Dunnet, etc) 
+
+```{r}
+library(multcomp)
+library(stats)
+res_aov <- aov(df$flipper_length_mm ~ df$species, data= df)
+post_test <- TukeyHSD(res_aov)
+plot(post_test)
+```
+
+

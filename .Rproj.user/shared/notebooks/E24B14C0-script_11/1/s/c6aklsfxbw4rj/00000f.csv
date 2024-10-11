@@ -1,0 +1,3 @@
+"0","library(palmerpenguins)"
+"0","df <- palmerpenguins::penguins"
+"0","head(df)"

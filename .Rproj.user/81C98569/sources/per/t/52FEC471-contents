@@ -1,0 +1,138 @@
+---
+title: "Comparison using R"
+author: "Haseeb Raza"
+date: "2024-07-19"
+output:
+  pdf_document: default
+  html_document:
+    highlight: zenburn
+    theme: journal
+---
+## Importing Data Set for Analysis
+
+For today's analysis we'll be using "chickwts" built in data set of R.
+
+```{r}
+library(tidyverse)
+data("chickwts")
+df <- chickwts
+unique(df$feed)
+mean_data <- group_by(df, feed) %>% summarise(weight_mean= mean(weight),
+                                              sd = sd(weight)) %>% 
+  arrange(desc(weight_mean))
+print(mean_data)
+
+```
+
+## ANOVA on 'Chickwts' Data Set
+
+
+```{r}
+
+library(tidyverse)
+library(stats)
+library(multcomp)
+library(multcompView)
+tibble(mean_data)
+
+anova <- aov(weight ~ feed, data=df)
+
+summary(anova)
+ 
+tukey <- TukeyHSD(anova)
+tukey
+plot(TukeyHSD(anova))
+
+```
+
+
+## Visualization of results through 'Barplots'
+
+
+### Lettering of results
+
+```{r}
+library(multcomp)
+library(multcompView)
+group_letters <- multcompLetters4(anova, tukey)
+group_letters
+```
+
+## Adding letters to data frame of results 
+
+```{r}
+library(tidyverse)
+group_letters <- as.data.frame.list(group_letters$feed)
+
+mean_data$group_letters <- group_letters$Letters
+
+tibble(mean_data)
+```
+
+### Creating 'barplots' using ggplot2
+
+```{r}
+library(ggplot2)
+library(RColorBrewer)
+library(ggthemes)
+ggplot(mean_data, mapping = aes(x=feed, y=weight_mean))+
+  geom_bar(stat = "identity")
+
+ggplot(mean_data, mapping = aes(x=feed, y=weight_mean))+
+  geom_bar(stat = "identity", aes(fill = feed), show.legend = FALSE)
+
+ggplot(mean_data, mapping = aes(x=feed, y=weight_mean))+
+  geom_bar(stat = "identity", aes(fill = feed), show.legend = FALSE, width = 0.6)
+
+ggplot(mean_data, mapping = aes(x=feed, y=weight_mean))+
+  geom_bar(stat = "identity", aes(fill = feed), show.legend = FALSE, width = 0.6)+
+  geom_errorbar(aes(ymin = weight_mean-sd, ymax = weight_mean+sd), width= 0.1)
+
+ggplot(mean_data, mapping = aes(x=feed, y=weight_mean))+
+  geom_bar(stat = "identity", aes(fill = feed), show.legend = FALSE, width = 0.6)+
+  geom_errorbar(aes(ymin = weight_mean-sd, ymax = weight_mean+sd), width= 0.1)+
+  geom_text(aes(label = group_letters, y= weight_mean+sd))
+
+
+ggplot(mean_data, mapping = aes(x=feed, y=weight_mean))+
+  geom_bar(stat = "identity", aes(fill = feed), show.legend = FALSE, width = 0.6)+
+  geom_errorbar(aes(ymin = weight_mean-sd, ymax = weight_mean+sd), width= 0.1)+
+  geom_text(aes(label = group_letters, y= weight_mean+sd), vjust= -0.4)
+
+
+ggplot(mean_data, mapping = aes(x=feed, y=weight_mean))+
+  geom_bar(stat = "identity", aes(fill = feed), show.legend = FALSE, width = 0.6)+
+  geom_errorbar(aes(ymin = weight_mean-sd, ymax = weight_mean+sd), width= 0.1)+
+  geom_text(aes(label = group_letters, y= weight_mean+sd), vjust= -0.4)+
+  scale_fill_brewer(palette = "Spectral", direction = -1)
+
+display.brewer.all()
+
+
+
+ggplot(mean_data, mapping = aes(x=feed, y=weight_mean))+
+  geom_bar(stat = "identity", aes(fill = feed), show.legend = FALSE, width = 0.6)+
+  geom_errorbar(aes(ymin = weight_mean-sd, ymax = weight_mean+sd), width= 0.1)+
+  geom_text(aes(label = group_letters, y= weight_mean+sd), vjust= -0.4)+
+  scale_fill_brewer(palette = "RdYlGn", direction = 1)+
+  labs(title = "YPDC's Barplot", x="Feed", y="Chicken Weight", fill= "Feed Type")
+
+
+p <- ggplot(mean_data, mapping = aes(x=feed, y=weight_mean))+
+  geom_bar(stat = "identity", aes(fill = feed), show.legend = FALSE, width = 0.6)+
+  geom_errorbar(aes(ymin = weight_mean-sd, ymax = weight_mean+sd), width= 0.1)+
+  geom_text(aes(label = group_letters, y= weight_mean+sd), vjust= -0.4)+
+  scale_fill_brewer(palette = "RdYlGn", direction = 1)+
+  labs(title = "YPDC's Barplot", x="Feed", y="Chicken Weight", fill= "Feed Type")+
+  ylim(0,410)+ ggthemes::theme_hc() ;p
+
+
+tiff("barplot.tiff", units = "in", width = 10, height = 9, res = 300, compression = "lzw")
+p
+dev.off()
+
+```
+
+
+
+

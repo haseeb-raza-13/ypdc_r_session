@@ -1,0 +1,68 @@
+---
+title: "YPDC Session"
+author: "Haseeb Raza"
+date: "2024-07-08"
+output:
+  html_document:
+    highlight: zenburn
+    theme: cosmo
+  pdf_document: default
+---
+# Importing iris data set
+## The Iris dataset is a multivariate dataset
+### The Iris dataset is a multivariate dataset introduced by the British biologist and statistician Ronald A. Fisher in his 1936 paper "The use of multiple measurements in taxonomic problems." It is often used as a beginner's dataset for machine learning and statistical classification techniques.
+
+```{r}
+head(iris)
+
+```
+```{r}
+tail(iris)
+```
+
+```{r}
+# Load the ggplot2 package
+library(ggplot2)
+
+ # Create a scatter plot of Petal.Length vs Petal.Width, colored by Species
+ggplot(data = iris, aes(x = Petal.Length, y = Petal.Width, color = Species))+ 
+  geom_point(size = 5, alpha = 0.5) +  # Add points with custom size and transparency
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed") +  # Add linear model lines
+  labs(
+    title = "Scatter Plot of Iris Petal Dimensions",
+    x = "Petal Length (cm)",
+    y = "Petal Width (cm)"
+  ) +
+  theme_dark() +  # Use a minimal theme for a clean look
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+```
+
+
+```{r}
+library(ggplot2)
+library(plotly)
+p1 <- # Load the ggplot2 package# Create a scatter plot of Petal.Length vs Petal.Width, colored by Species
+ggplot(data = iris, aes(x = Petal.Length, y = Petal.Width, color = Species))+ 
+  geom_point(size = 5, alpha = 0.5) +  # Add points with custom size and transparency
+  geom_smooth(method = "lm", se = FALSE, linetype = "dashed") +  # Add linear model lines
+  labs(
+    title = "Scatter Plot of Iris Petal Dimensions",
+    x = "Petal Length (cm)",
+    y = "Petal Width (cm)"
+  ) +
+  theme_dark() +  # Use a minimal theme for a clean look
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
+
+ggplotly(p1)
+  
+```
+
+## here you can visit my linked in 
+
+<a href="https://www.linkedin.com/in/haseeb-raza-344947297/?originalSubdomain=pk">Linkedin</a>
+
+## using i frame tag for embedding other links
+
+
+
+

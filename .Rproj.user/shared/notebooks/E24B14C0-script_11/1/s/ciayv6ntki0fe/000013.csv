@@ -1,0 +1,6 @@
+"0","library(tidyverse)"
+"0","df %>% "
+"0","  select(., flipper_length_mm) %>% "
+"0","  group_by(df$species) %>% "
+"0","  drop_na() %>% "
+"0","  summarise( avg = mean(flipper_length_mm), sd = sd(flipper_length_mm))"

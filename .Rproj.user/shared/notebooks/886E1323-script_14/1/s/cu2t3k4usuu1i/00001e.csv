@@ -1,0 +1,4 @@
+"0",""
+"0","ggplot(mean_data, mapping = aes(x=feed, y=weight_mean))+"
+"0","  geom_bar(stat = ""identity"", aes(fill = feed), show.legend = FALSE, width = 0.6)+"
+"0","  geom_errorbar(aes(ymin = weight_mean-sd, ymax = weight_mean+sd), width= 0.1)"

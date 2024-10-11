@@ -1,0 +1,5 @@
+"0","library(multcomp)"
+"0","library(stats)"
+"0","res_aov <- aov(df$flipper_length_mm ~ df$species, data= df)"
+"0","post_test <- TukeyHSD(res_aov)"
+"0","plot(post_test)"
